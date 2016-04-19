@@ -1,0 +1,46 @@
+<script src="https://cdn.pubnub.com/pubnub-3.14.5.js"></script>
+<script>
+
+    var pubnub = PUBNUB.init({
+        'publish_key': 'demo',
+        'subscribe_key': 'demo',
+        heartbeat: 20
+    });
+
+    pubnub.subscribe({
+        'channel': "qwer",
+        'callback': function (r) {
+            console.log(JSON.stringify(r));
+            pubnub.state({
+                channel: 'qwer',
+                state: {
+                    name: 'Alex',
+                    status: 'online'
+                },
+                callback: function () {
+                    pubnub.state({
+                        channel: 'qwer',
+                        uuid: 'user_2',
+                        state: {
+                            name: 'Dave',
+                            age: 12
+                        },
+                        callback: function () {
+                        },
+                        error: console.error
+                    })
+                },
+                error: console.error
+            });
+        },
+        'connect': function () {
+            setTimeout(function () {
+                pubnub.publish({
+                    channel: "qwer",
+                    message: "hey"
+                })
+            }, 1000)
+        }
+    })
+
+</script>
